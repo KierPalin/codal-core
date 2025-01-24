@@ -336,7 +336,14 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
       }
     else
       for (int i = 0; i < 256; ++i)
-        work->expPalette[i] = 0x1011 * (i & 0xf) | (0x110100 * (i >> 4));
+      // work->expPalette[i] = 0x1011 * (i & 0xf) | (0x110100 * (i >> 4));
+      {
+        uint8_t r = (palette[i] >> 16) & 0xFF;
+        uint8_t g = (palette[i] >> 8) & 0xFF;
+        uint8_t b = palette[i] & 0xFF;
+        work->expPalette[i] = (r << 16) | (g << 8) |
+                              b; // Expanding palette entries to full 24-bit
+      }
     EventModel::defaultEventBus->listen(DEVICE_ID_DISPLAY, 100, this,
                                         &ST7735::sendDone);
   }
