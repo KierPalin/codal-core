@@ -341,8 +341,7 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
         uint8_t r = (palette[i] >> 16) & 0xFF;
         uint8_t g = (palette[i] >> 8) & 0xFF;
         uint8_t b = palette[i] & 0xFF;
-        work->expPalette[i] = (r << 16) | (g << 8) |
-                              b; // Expanding palette entries to full 24-bit
+        work->expPalette[i] = (r << 16) | (g << 8) | b;
       }
     EventModel::defaultEventBus->listen(DEVICE_ID_DISPLAY, 100, this,
                                         &ST7735::sendDone);
@@ -357,7 +356,7 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
   work->srcPtr = src;
   work->width = width;
   work->height = height;
-  work->srcLeft = (height + 1) >> 1;
+  work->srcLeft = height * width; // (height + 1) >> 1;
   // when not scaling up, we don't care about where lines end
   if (!double16)
     work->srcLeft *= width;
