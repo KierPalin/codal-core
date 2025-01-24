@@ -213,7 +213,8 @@ void ST7735::sendWords(unsigned numBytes) {
 
 void ST7735::sendColorsStep(ST7735 *st) {
   ST7735WorkBuffer *work = st->work;
-  errorToTestCompiling if (work->paletteTable) {
+
+  if (work->paletteTable) {
     auto palette = work->paletteTable;
     work->paletteTable = NULL;
     memset(work->dataBuf, 0, sizeof(work->dataBuf));
@@ -251,11 +252,26 @@ void ST7735::sendColorsStep(ST7735 *st) {
     } else {
       st->sendBytes(work->srcLeft);
     }
+    // } else {
+    //   if (st->double16)
+    //     st->sendWords(sizeof(work->dataBuf) / 8);
+    //   else
+    //     st->sendWords((sizeof(work->dataBuf) / (3 * 4)) * 4);
+    // }
   } else {
-    if (st->double16)
-      st->sendWords(sizeof(work->dataBuf) / 8);
-    else
-      st->sendWords((sizeof(work->dataBuf) / (3 * 4)) * 4);
+    if (work->expPalette[0] == 8) {
+      // 8bpp: each pixel takes 1 byte (index into the palette)
+      st->sendBytes(sizeof(work->dataBuf) / 1); // Send bytes (1 byte per pixel)
+    } else if (work->expPalette[0] == 4) {
+      st->sendBytes(sizeof(work->dataBuf) /
+                    2); // Send bytes (2 pixels per byte)
+    } else if (work->expPalette[0] == 1) {
+      st->sendBytes(sizeof(work->dataBuf) /
+                    8); // Send bytes (8 pixels per byte)
+    } else {
+      // Handle other bpp values if necessary (unlikely case)
+      return; // Exit for unsupported bpp formats
+    }
   }
 }
 
