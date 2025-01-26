@@ -164,18 +164,10 @@ void ST7735::sendBytes(unsigned num) {
   } else {
     uint8_t *dst = work->dataBuf;
     while (num--) {
-      // uint32_t v = work->expPalette[*work->srcPtr++];
-      // *dst++ = v;
-      // *dst++ = v >> 8;
-      // *dst++ = v >> 16;
-      uint8_t v = *work->srcPtr++;
-
-      // Map the index to the 32-color palette
-      uint32_t color =
-          work->expPalette[v & 0x1F]; // 5 bits for each color (32 colors)
-      *dst++ = color;
-      *dst++ = color >> 8;
-      *dst++ = color >> 16;
+      uint32_t v = work->expPalette[*work->srcPtr++];
+      *dst++ = v;
+      *dst++ = v >> 8;
+      *dst++ = v >> 16;
     }
     startTransfer(dst - work->dataBuf);
   }
