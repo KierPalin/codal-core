@@ -321,8 +321,22 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
     // work->expPalette[i] = palette[i];
     // }
     // else
-    for (int i = 0; i < 256; ++i)
-      work->expPalette[i] = 0x111110 * (i & 0x1f) | (0x110000 * (i >> 5));
+    // for (int i = 0; i < 256; ++i)
+    //   work->expPalette[i] = 0x111110 * (i & 0x1f) | (0x110000 * (i >> 5));
+
+    for (int i = 0; i < 32; ++i) {
+      uint32_t color = palette[i];
+      uint8_t r = (color >> 16) & 0xFF;
+      uint8_t g = (color >> 8) & 0xFF;
+      uint8_t b = color & 0xFF;
+
+      work->expPalette[i] = (r << 16) | (g << 8) | b;
+    }
+
+    for (int i = 32; i < 256; ++i) {
+      work->expPalette[i] = 0x000000;
+    }
+
     EventModel::defaultEventBus->listen(DEVICE_ID_DISPLAY, 100, this,
                                         &ST7735::sendDone);
   }
