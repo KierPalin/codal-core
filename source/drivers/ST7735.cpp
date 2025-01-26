@@ -252,26 +252,11 @@ void ST7735::sendColorsStep(ST7735 *st) {
     } else {
       st->sendBytes(work->srcLeft);
     }
-    // } else {
-    //   if (st->double16)
-    //     st->sendWords(sizeof(work->dataBuf) / 8);
-    //   else
-    //     st->sendWords((sizeof(work->dataBuf) / (3 * 4)) * 4);
-    // }
   } else {
-    if (work->expPalette[0] == 8) {
-      // 8bpp: each pixel takes 1 byte (index into the palette)
-      st->sendBytes(sizeof(work->dataBuf) / 1); // Send bytes (1 byte per pixel)
-    } else if (work->expPalette[0] == 4) {
-      st->sendBytes(sizeof(work->dataBuf) /
-                    2); // Send bytes (2 pixels per byte)
-    } else if (work->expPalette[0] == 1) {
-      st->sendBytes(sizeof(work->dataBuf) /
-                    8); // Send bytes (8 pixels per byte)
-    } else {
-      // Handle other bpp values if necessary (unlikely case)
-      return; // Exit for unsupported bpp formats
-    }
+    if (st->double16)
+      st->sendWords(sizeof(work->dataBuf) / 8);
+    else
+      st->sendWords((sizeof(work->dataBuf) / (3 * 4)) * 4);
   }
 }
 
@@ -336,13 +321,7 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
       }
     else
       for (int i = 0; i < 256; ++i)
-      // work->expPalette[i] = 0x1011 * (i & 0xf) | (0x110100 * (i >> 4));
-      {
-        uint8_t r = (palette[i] >> 16) & 0xFF;
-        uint8_t g = (palette[i] >> 8) & 0xFF;
-        uint8_t b = palette[i] & 0xFF;
-        work->expPalette[i] = (r << 16) | (g << 8) | b;
-      }
+        work->expPalette[i] = 0x1011 * (i & 0xf) | (0x110100 * (i >> 4));
     EventModel::defaultEventBus->listen(DEVICE_ID_DISPLAY, 100, this,
                                         &ST7735::sendDone);
   }
@@ -356,7 +335,7 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
   work->srcPtr = src;
   work->width = width;
   work->height = height;
-  work->srcLeft = height * width; // (height + 1) >> 1;
+  work->srcLeft = (height + 1) >> 1;
   // when not scaling up, we don't care about where lines end
   if (!double16)
     work->srcLeft *= width;
