@@ -322,7 +322,7 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
     // }
     // else
     for (int i = 0; i < 256; ++i)
-      work->expPalette[i] = 0x1011 * (i & 0xf) | (0x110100 * (i >> 4));
+      work->expPalette[i] = 0x111110 * (i & 0x1f) | (0x110000 * (i >> 5));
     EventModel::defaultEventBus->listen(DEVICE_ID_DISPLAY, 100, this,
                                         &ST7735::sendDone);
   }
