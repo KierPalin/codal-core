@@ -219,7 +219,7 @@ void ST7735::sendColorsStep(ST7735 *st) {
     work->paletteTable = NULL;
     memset(work->dataBuf, 0, sizeof(work->dataBuf));
     uint8_t *base = work->dataBuf;
-    for (int i = 0; i < 32; ++i) {
+    for (int i = 0; i < 16; ++i) {
       base[i] = (palette[i] >> 18) & 0x3f;
       base[i + 32] = (palette[i] >> 10) & 0x3f;
       base[i + 32 + 64] = (palette[i] >> 2) & 0x3f;
@@ -315,7 +315,7 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
     work = new ST7735WorkBuffer;
     memset(work, 0, sizeof(*work));
     if (double16)
-      for (int i = 0; i < 32; ++i) {
+      for (int i = 0; i < 16; ++i) {
         uint16_t e = ENC16(i, i, i);
         work->expPalette[i] = e | (e << 16);
       }
