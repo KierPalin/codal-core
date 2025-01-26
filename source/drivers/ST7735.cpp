@@ -164,10 +164,18 @@ void ST7735::sendBytes(unsigned num) {
   } else {
     uint8_t *dst = work->dataBuf;
     while (num--) {
-      uint32_t v = work->expPalette[*work->srcPtr++];
-      *dst++ = v;
-      *dst++ = v >> 8;
-      *dst++ = v >> 16;
+      // uint32_t v = work->expPalette[*work->srcPtr++];
+      // *dst++ = v;
+      // *dst++ = v >> 8;
+      // *dst++ = v >> 16;
+      uint8_t v = *work->srcPtr++;
+
+      // Map the index to the 32-color palette
+      uint32_t color =
+          work->expPalette[v & 0x1F]; // 5 bits for each color (32 colors)
+      *dst++ = color;
+      *dst++ = color >> 8;
+      *dst++ = color >> 16;
     }
     startTransfer(dst - work->dataBuf);
   }
@@ -225,7 +233,7 @@ void ST7735::sendColorsStep(ST7735 *st) {
       base[i + 32 + 64] = (palette[i] >> 2) & 0x3f;
     }
     st->startRAMWR(0x2D);
-    st->io.send(work->dataBuf, 256);
+    st->io.send(work->dataBuf, 128);
     st->endCS();
   }
 
@@ -314,99 +322,98 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
   if (!work) {
     work = new ST7735WorkBuffer;
     memset(work, 0, sizeof(*work));
-    if (double16)
-      for (int i = 0; i < 32; ++i) {
-        uint16_t e = ENC16(i, i, i);
-        work->expPalette[i] = e | (e << 16);
-      }
-    else
-      for (int i = 0; i < 256; ++i)
-        work->expPalette[i] = 0x1011 * (i & 0xf) | (0x110100 * (i >> 4));
-    EventModel::defaultEventBus->listen(DEVICE_ID_DISPLAY, 100, this,
-                                        &ST7735::sendDone);
+    // if (double16)
+    for (int i = 0; i < 32; ++i) {
+      uint16_t e = ENC16(i, i, i);
+      work->expPalette[i] = e | (e << 16);
+      // }
+      // else for (int i = 0; i < 256; ++i) work->expPalette[i] =
+      //     0x1011 * (i & 0xf) | (0x110100 * (i >> 4));
+      EventModel::defaultEventBus->listen(DEVICE_ID_DISPLAY, 100, this,
+                                          &ST7735::sendDone);
+    }
+
+    if (work->inProgress || inSleepMode)
+      return DEVICE_BUSY;
+
+    work->paletteTable = palette;
+
+    work->inProgress = true;
+    work->srcPtr = src;
+    work->width = width;
+    work->height = height;
+    work->srcLeft = (height + 1) >> 1;
+    // when not scaling up, we don't care about where lines end
+    if (!double16)
+      work->srcLeft *= width;
+    work->x = 0;
+
+    sendColorsStep(this);
+
+    return DEVICE_OK;
   }
 
-  if (work->inProgress || inSleepMode)
-    return DEVICE_BUSY;
+  // we don't modify *buf, but it cannot be in flash, so no const as a hint
+  void ST7735::sendCmd(uint8_t *buf, int len) {
+    // make sure cmd isn't on stack
+    if (buf != cmdBuf)
+      memcpy(cmdBuf, buf, len);
+    buf = cmdBuf;
+    setCommand();
+    beginCS();
+    io.send(buf, 1);
+    setData();
+    len--;
+    buf++;
+    if (len > 0)
+      io.send(buf, len);
+    endCS();
+  }
 
-  work->paletteTable = palette;
-
-  work->inProgress = true;
-  work->srcPtr = src;
-  work->width = width;
-  work->height = height;
-  work->srcLeft = (height + 1) >> 1;
-  // when not scaling up, we don't care about where lines end
-  if (!double16)
-    work->srcLeft *= width;
-  work->x = 0;
-
-  sendColorsStep(this);
-
-  return DEVICE_OK;
-}
-
-// we don't modify *buf, but it cannot be in flash, so no const as a hint
-void ST7735::sendCmd(uint8_t *buf, int len) {
-  // make sure cmd isn't on stack
-  if (buf != cmdBuf)
-    memcpy(cmdBuf, buf, len);
-  buf = cmdBuf;
-  setCommand();
-  beginCS();
-  io.send(buf, 1);
-  setData();
-  len--;
-  buf++;
-  if (len > 0)
-    io.send(buf, len);
-  endCS();
-}
-
-void ST7735::sendCmdSeq(const uint8_t *buf) {
-  while (*buf) {
-    cmdBuf[0] = *buf++;
-    int v = *buf++;
-    int len = v & ~DELAY;
-    // note that we have to copy to RAM
-    memcpy(cmdBuf + 1, buf, len);
-    sendCmd(cmdBuf, len + 1);
-    buf += len;
-    if (v & DELAY) {
-      fiber_sleep(*buf++);
+  void ST7735::sendCmdSeq(const uint8_t *buf) {
+    while (*buf) {
+      cmdBuf[0] = *buf++;
+      int v = *buf++;
+      int len = v & ~DELAY;
+      // note that we have to copy to RAM
+      memcpy(cmdBuf + 1, buf, len);
+      sendCmd(cmdBuf, len + 1);
+      buf += len;
+      if (v & DELAY) {
+        fiber_sleep(*buf++);
+      }
     }
   }
-}
 
-void ST7735::setAddrWindow(int x, int y, int w, int h) {
-  int x2 = x + w - 1;
-  int y2 = y + h - 1;
-  uint8_t cmd0[] = {ST7735_RASET, (uint8_t)(x >> 8), (uint8_t)x,
-                    (uint8_t)(x2 >> 8), (uint8_t)x2};
-  uint8_t cmd1[] = {ST7735_CASET, (uint8_t)(y >> 8), (uint8_t)y,
-                    (uint8_t)(y2 >> 8), (uint8_t)y2};
-  sendCmd(cmd1, sizeof(cmd1));
-  sendCmd(cmd0, sizeof(cmd0));
-}
-
-int ST7735::init() {
-  endCS();
-  setData();
-
-  fiber_sleep(10); // TODO check if delay needed
-  sendCmdSeq(initCmds);
-
-  return DEVICE_OK;
-}
-
-void ST7735::configure(uint8_t madctl, uint32_t frmctr1) {
-  uint8_t cmd0[] = {ST7735_MADCTL, madctl};
-  uint8_t cmd1[] = {ST7735_FRMCTR1, (uint8_t)(frmctr1 >> 16),
-                    (uint8_t)(frmctr1 >> 8), (uint8_t)frmctr1};
-  if (madctl != 0xff)
+  void ST7735::setAddrWindow(int x, int y, int w, int h) {
+    int x2 = x + w - 1;
+    int y2 = y + h - 1;
+    uint8_t cmd0[] = {ST7735_RASET, (uint8_t)(x >> 8), (uint8_t)x,
+                      (uint8_t)(x2 >> 8), (uint8_t)x2};
+    uint8_t cmd1[] = {ST7735_CASET, (uint8_t)(y >> 8), (uint8_t)y,
+                      (uint8_t)(y2 >> 8), (uint8_t)y2};
+    sendCmd(cmd1, sizeof(cmd1));
     sendCmd(cmd0, sizeof(cmd0));
-  if (frmctr1 != 0xffffff)
-    sendCmd(cmd1, cmd1[3] == 0xff ? 3 : 4);
-}
+  }
+
+  int ST7735::init() {
+    endCS();
+    setData();
+
+    fiber_sleep(10); // TODO check if delay needed
+    sendCmdSeq(initCmds);
+
+    return DEVICE_OK;
+  }
+
+  void ST7735::configure(uint8_t madctl, uint32_t frmctr1) {
+    uint8_t cmd0[] = {ST7735_MADCTL, madctl};
+    uint8_t cmd1[] = {ST7735_FRMCTR1, (uint8_t)(frmctr1 >> 16),
+                      (uint8_t)(frmctr1 >> 8), (uint8_t)frmctr1};
+    if (madctl != 0xff)
+      sendCmd(cmd0, sizeof(cmd0));
+    if (frmctr1 != 0xffffff)
+      sendCmd(cmd1, cmd1[3] == 0xff ? 3 : 4);
+  }
 
 } // namespace codal
