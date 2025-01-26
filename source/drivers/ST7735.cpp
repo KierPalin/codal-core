@@ -157,8 +157,8 @@ void ST7735::sendBytes(unsigned num) {
     uint32_t *dst = (uint32_t *)work->dataBuf;
     while (num--) {
       uint8_t v = *work->srcPtr++;
-      *dst++ = work->expPalette[v & 0x1f];
-      *dst++ = work->expPalette[v >> 5];
+      *dst++ = work->expPalette[v & 0xf];
+      *dst++ = work->expPalette[v >> 4];
     }
     startTransfer((uint8_t *)dst - work->dataBuf);
   } else {
@@ -225,7 +225,7 @@ void ST7735::sendColorsStep(ST7735 *st) {
       base[i + 32 + 64] = (palette[i] >> 2) & 0x3f;
     }
     st->startRAMWR(0x2D);
-    st->io.send(work->dataBuf, 128);
+    st->io.send(work->dataBuf, 256);
     st->endCS();
   }
 
