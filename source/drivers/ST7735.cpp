@@ -157,8 +157,8 @@ void ST7735::sendBytes(unsigned num) {
     uint32_t *dst = (uint32_t *)work->dataBuf;
     while (num--) {
       uint8_t v = *work->srcPtr++;
-      *dst++ = work->expPalette[v & 0xf];
-      *dst++ = work->expPalette[v >> 4];
+      *dst++ = work->expPalette[v & 0x1f];
+      *dst++ = work->expPalette[v >> 5];
     }
     startTransfer((uint8_t *)dst - work->dataBuf);
   } else {
