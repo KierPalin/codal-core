@@ -66,7 +66,7 @@ namespace codal {
 
 ST7735::ST7735(ScreenIO &io, Pin &cs, Pin &dc)
     : io(io), cs(&cs), dc(&dc), work(NULL) {
-  double16 = true;
+  double16 = false;
   inSleepMode = false;
 }
 
@@ -157,8 +157,8 @@ void ST7735::sendBytes(unsigned num) {
     uint32_t *dst = (uint32_t *)work->dataBuf;
     while (num--) {
       uint8_t v = *work->srcPtr++;
-      *dst++ = work->expPalette[v & 0xff];
-      // *dst++ = work->expPalette[v >> 4];
+      *dst++ = work->expPalette[v & 0xf];
+      *dst++ = work->expPalette[v >> 4];
     }
     startTransfer((uint8_t *)dst - work->dataBuf);
   } else {
@@ -225,7 +225,7 @@ void ST7735::sendColorsStep(ST7735 *st) {
       base[i + 32 + 64] = (palette[i] >> 2) & 0x3f;
     }
     st->startRAMWR(0x2D);
-    st->io.send(work->dataBuf, 256);
+    st->io.send(work->dataBuf, 128);
     st->endCS();
   }
 
