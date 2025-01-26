@@ -315,7 +315,7 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
     work = new ST7735WorkBuffer;
     memset(work, 0, sizeof(*work));
     if (double16)
-      for (int i = 0; i < 16; ++i) {
+      for (int i = 0; i < 32; ++i) {
         uint16_t e = ENC16(i, i, i);
         work->expPalette[i] = e | (e << 16);
       }
