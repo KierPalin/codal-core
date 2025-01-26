@@ -318,7 +318,6 @@ int ST7735::sendIndexedImage(const uint8_t *src, unsigned width,
       for (int i = 0; i < 32; ++i) {
         uint16_t e = ENC16(i, i, i);
         work->expPalette[i] = e | (e << 16);
-        // work->expPalette[i] = palette[i];
       }
     else
       for (int i = 0; i < 256; ++i)
