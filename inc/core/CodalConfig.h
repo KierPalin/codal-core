@@ -64,7 +64,7 @@ DEALINGS IN THE SOFTWARE.
 // n.b. Setting this option to '1' will also optimise the heap allocator for code space.
 //
 #ifndef DEVICE_MAXIMUM_HEAPS
-#define DEVICE_MAXIMUM_HEAPS                  1
+#define DEVICE_MAXIMUM_HEAPS                  2
 #endif
 
 // If enabled, RefCounted objects include a constant tag at the beginning.
