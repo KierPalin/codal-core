@@ -67,16 +67,6 @@ struct HeapDefinition {
 extern PROCESSOR_WORD_TYPE codal_heap_start;
 
 /**
- *  Diplays a usage summary about a given heap...
- */
-void device_heap_print(HeapDefinition &heap);
-
-/**
- * Diagnostics function. Displays a usage summary about all initialised heaps.
- */
-void device_heap_print_all();
-
-/**
  * Create and initialise a given memory region as for heap storage.
  * After this is called, any future calls to malloc, new, free or delete may
  * use the new heap. The heap allocator will attempt to allocate memory from

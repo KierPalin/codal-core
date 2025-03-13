@@ -179,7 +179,7 @@ DEALINGS IN THE SOFTWARE.
 #endif
 
 #ifndef CODAL_DEBUG
-#define CODAL_DEBUG                           CODAL_DEBUG_DISABLED
+#define CODAL_DEBUG                           CODAL_DEBUG_HEAP
 #endif
 
 // When set to '1', this option enables parameter validation checking into low level system modules
