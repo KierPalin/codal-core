@@ -324,7 +324,6 @@ void *device_malloc(size_t size) {
 
   // No space in any heap. Create a new heap if we can:
   if (p == NULL && heap_count < DEVICE_COMPONENT_COUNT) {
-    heap_count++;
     device_create_heap((PROCESSOR_WORD_TYPE)(codal_heap_start),
                        (PROCESSOR_WORD_TYPE)(DEVICE_STACK_BASE) -
                            (PROCESSOR_WORD_TYPE)(DEVICE_STACK_SIZE));
