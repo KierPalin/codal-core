@@ -63,7 +63,7 @@ using namespace codal;
 HeapDefinition heap[DEVICE_MAXIMUM_HEAPS] = { };
 uint8_t heap_count = 0;
 
-// #if (CODAL_DEBUG >= CODAL_DEBUG_HEAP)
+#if (CODAL_DEBUG >= CODAL_DEBUG_HEAP)
 // Diplays a usage summary about a given heap...
 void device_heap_print(HeapDefinition &heap)
 {
@@ -119,7 +119,7 @@ void device_heap_print()
         device_heap_print(heap[i]);
     }
 }
-// #endif
+#endif
 
 /**
   * Create and initialise a given memory region as for heap storage.
@@ -193,7 +193,7 @@ uint32_t device_heap_size(uint8_t heap_index)
 REAL_TIME_FUNC
 void *device_malloc_in(size_t size, HeapDefinition &heap)
 {
-    device_heap_size();
+    device_heap_print();
     PROCESSOR_WORD_TYPE	blockSize = 0;
     PROCESSOR_WORD_TYPE	blocksNeeded = size % DEVICE_HEAP_BLOCK_SIZE == 0 ? size / DEVICE_HEAP_BLOCK_SIZE : size / DEVICE_HEAP_BLOCK_SIZE + 1;
     PROCESSOR_WORD_TYPE	*block;
@@ -285,7 +285,7 @@ void *device_malloc_in(size_t size, HeapDefinition &heap)
 REAL_TIME_FUNC
 void* device_malloc (size_t size)
 {
-    device_heap_size();
+    device_heap_print();
     static uint8_t initialised = 0;
     void *p;
 
