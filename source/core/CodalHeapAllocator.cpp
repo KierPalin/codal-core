@@ -69,8 +69,8 @@ void device_heap_print(HeapDefinition &heap)
 {
     PROCESSOR_WORD_TYPE	blockSize;
     PROCESSOR_WORD_TYPE	*block;
-    int         totalFreeBlock = 0;
-    int         totalUsedBlock = 0;
+    volatile int         totalFreeBlock = 0;
+    volatile int         totalUsedBlock = 0;
 
     if (heap.heap_start == NULL)
     {
