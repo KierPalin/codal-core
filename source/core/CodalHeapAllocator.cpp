@@ -111,7 +111,7 @@ void device_heap_print(HeapDefinition &heap) {
 }
 
 // Diagnostics function. Displays a usage summary about all initialised heaps.
-void device_heap_print() {
+void device_heap_print_all() {
   for (int i = 0; i < heap_count; i++) {
     DMESG("\nHEAP %d: ", i);
     device_heap_print(heap[i]);

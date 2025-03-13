@@ -74,7 +74,7 @@ void device_heap_print(HeapDefinition &heap);
 /**
  * Diagnostics function. Displays a usage summary about all initialised heaps.
  */
-void device_heap_print();
+void device_heap_print_all();
 
 /**
  * Create and initialise a given memory region as for heap storage.
