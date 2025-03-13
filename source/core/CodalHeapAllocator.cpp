@@ -193,6 +193,7 @@ uint32_t device_heap_size(uint8_t heap_index)
 REAL_TIME_FUNC
 void *device_malloc_in(size_t size, HeapDefinition &heap)
 {
+    device_heap_size();
     PROCESSOR_WORD_TYPE	blockSize = 0;
     PROCESSOR_WORD_TYPE	blocksNeeded = size % DEVICE_HEAP_BLOCK_SIZE == 0 ? size / DEVICE_HEAP_BLOCK_SIZE : size / DEVICE_HEAP_BLOCK_SIZE + 1;
     PROCESSOR_WORD_TYPE	*block;
@@ -284,6 +285,7 @@ void *device_malloc_in(size_t size, HeapDefinition &heap)
 REAL_TIME_FUNC
 void* device_malloc (size_t size)
 {
+    device_heap_size();
     static uint8_t initialised = 0;
     void *p;
 
