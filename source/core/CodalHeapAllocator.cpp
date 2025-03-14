@@ -324,8 +324,8 @@ void *device_malloc(size_t size) {
 
   // No space in any heap. Create a new heap if we can:
   if (p == NULL && heap_count < DEVICE_COMPONENT_COUNT) {
-    const PROCESSOR_WORD_TYPE last_heap_end =
-        (PROCESSOR_WORD_TYPE)(heap[heap_count - 1].heap_end);
+    // const PROCESSOR_WORD_TYPE last_heap_end =
+    //     (PROCESSOR_WORD_TYPE)(heap[heap_count - 1].heap_end);
     device_create_heap((PROCESSOR_WORD_TYPE)(codal_heap_start + 0x8001),
                        (PROCESSOR_WORD_TYPE)(DEVICE_STACK_BASE) -
                            (PROCESSOR_WORD_TYPE)(DEVICE_STACK_SIZE));
