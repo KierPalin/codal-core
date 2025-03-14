@@ -327,11 +327,11 @@ void *device_malloc(size_t size) {
     //                    (PROCESSOR_WORD_TYPE)(DEVICE_STACK_BASE) -
     //                        (PROCESSOR_WORD_TYPE)(DEVICE_STACK_SIZE));
     const PROCESSOR_WORD_TYPE last_heap_end =
-        (PROCESSOR_WORD_TYPE)(heap[heap_count - 1].heap_end);
+        (PROCESSOR_WORD_TYPE)(heap[heap_count 1].heap_end);
 
     device_create_heap((PROCESSOR_WORD_TYPE)(last_heap_end + 1),
                        (PROCESSOR_WORD_TYPE)(last_heap_end + 1 + 0x8000));
-    p = device_malloc_in(size, heap[heap_count - 2]);
+    p = device_malloc_in(size, heap[heap_count - 1]);
   }
 #endif
 
