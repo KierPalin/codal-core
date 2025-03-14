@@ -327,6 +327,7 @@ void *device_malloc(size_t size) {
     device_create_heap((PROCESSOR_WORD_TYPE)(codal_heap_start),
                        (PROCESSOR_WORD_TYPE)(DEVICE_STACK_BASE) -
                            (PROCESSOR_WORD_TYPE)(DEVICE_STACK_SIZE));
+    p = device_malloc_in(size, heap[heap_count - 1]);
   }
 #endif
 
