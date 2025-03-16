@@ -309,7 +309,7 @@ int ST7735::setSleep(bool sleepMode) {
 #define ENC16(r, g, b)                                                         \
   (((r << 3) | (g >> 3)) & 0xff) | (((b | (g << 5)) & 0xff) << 8)
 
-int ST7735::sendIndexedImage(const uint32_t *src, unsigned width, unsigned height,
+int ST7735::sendIndexedImage(uint32_t *src, unsigned width, unsigned height,
                              uint32_t *palette) {
   if (!work) {
     work = new ST7735WorkBuffer;
