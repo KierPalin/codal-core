@@ -173,7 +173,7 @@ void ST7735::sendBytes(const uint8_t *src, unsigned num) {
   }
 }
 
-void ST7735::sendWords(uint8_t *src, unsigned numBytes) {
+void ST7735::sendWords(const uint8_t *src, unsigned numBytes) {
   if (numBytes > work->srcLeft)
     numBytes = work->srcLeft & ~3;
   assert(numBytes > 0);
@@ -311,7 +311,7 @@ int ST7735::setSleep(bool sleepMode) {
 #define ENC16(r, g, b)                                                         \
   (((r << 3) | (g >> 3)) & 0xff) | (((b | (g << 5)) & 0xff) << 8)
 
-int ST7735::sendIndexedImage(uint8_t *src, unsigned width, unsigned height,
+int ST7735::sendIndexedImage(const uint8_t *src, unsigned width, unsigned height,
                              uint32_t *palette) {
   if (!work) {
     work = new ST7735WorkBuffer;
