@@ -93,7 +93,7 @@ public:
      * Send 4 bit indexed color image, little endian, column-major, using specified palette (use
      * NULL if unchanged).
      */
-    int sendIndexedImage(uint8_t *src, unsigned width, unsigned height, uint32_t *palette);
+    int sendIndexedImage(const uint8_t *src, unsigned width, unsigned height, uint32_t *palette);
     /**
      * Waits for the previous sendIndexedImage() operation to complete (it normally executes in
      * background).
