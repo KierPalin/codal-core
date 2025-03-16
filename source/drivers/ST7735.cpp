@@ -237,7 +237,7 @@ void ST7735::sendColorsStep(ST7735 *st, uint32_t *src) {
   if (st->double16 && work->srcLeft == 0 && work->x++ < (work->width << 1)) {
     work->srcLeft = (work->height + 1) >> 1;
     if ((work->x & 1) == 0) {
-      src -= work->srcLeft; // 
+      src -= work->srcLeft; //
     }
   }
 
@@ -309,8 +309,8 @@ int ST7735::setSleep(bool sleepMode) {
 #define ENC16(r, g, b)                                                         \
   (((r << 3) | (g >> 3)) & 0xff) | (((b | (g << 5)) & 0xff) << 8)
 
-int ST7735::sendIndexedImage(unsigned width,
-                             unsigned height, uint32_t *palette) {
+int ST7735::sendIndexedImage(unsigned width, unsigned height,
+                             uint32_t *palette) {
   if (!work) {
     work = new ST7735WorkBuffer;
     memset(work, 0, sizeof(*work));

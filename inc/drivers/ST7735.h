@@ -66,12 +66,12 @@ protected:
     void sendCmd(uint8_t *buf, int len);
     void sendCmdSeq(const uint8_t *buf);
     void sendDone(Event);
-    void sendWords(unsigned numBytes);
+    void sendWords(const uint32_t *src, unsigned numBytes);
     void startTransfer(unsigned size);
-    void sendBytes(unsigned num);
+    void sendBytes(const uint32_t *src, unsigned num);
     void startRAMWR(int cmd = 0);
 
-    static void sendColorsStep(ST7735 *st);
+    static void sendColorsStep(ST7735 *st, const uint32_t *src);
 
 public:
     ST7735(ScreenIO &io, Pin &cs, Pin &dc);
