@@ -244,7 +244,7 @@ void ST7735::sendColorsStep(ST7735 *st, uint32_t *src) {
   // with the current image format in PXT the sendBytes cases never happen
   unsigned align = (unsigned)src & 3; //
   if (work->srcLeft && align) {
-    st->sendBytes(4 - align);
+    st->sendBytes(src, 4 - align);
   } else if (work->srcLeft < 4) {
     if (work->srcLeft == 0) {
       st->endCS();
