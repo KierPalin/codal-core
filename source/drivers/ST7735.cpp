@@ -250,13 +250,13 @@ void ST7735::sendColorsStep(ST7735 *st, uint32_t *src) {
       st->endCS();
       Event(DEVICE_ID_DISPLAY, 100);
     } else {
-      st->sendBytes(work->srcLeft);
+      st->sendBytes(src, work->srcLeft);
     }
   } else {
     if (st->double16)
-      st->sendWords(sizeof(work->dataBuf) / 8);
+      st->sendWords(src, sizeof(work->dataBuf) / 8);
     else
-      st->sendWords((sizeof(work->dataBuf) / (3 * 4)) * 4);
+      st->sendWords(src, (sizeof(work->dataBuf) / (3 * 4)) * 4);
   }
 }
 
@@ -309,7 +309,7 @@ int ST7735::setSleep(bool sleepMode) {
 #define ENC16(r, g, b)                                                         \
   (((r << 3) | (g >> 3)) & 0xff) | (((b | (g << 5)) & 0xff) << 8)
 
-int ST7735::sendIndexedImage(unsigned width, unsigned height,
+int ST7735::sendIndexedImage(const uint32_t *src, unsigned width, unsigned height,
                              uint32_t *palette) {
   if (!work) {
     work = new ST7735WorkBuffer;
@@ -341,7 +341,7 @@ int ST7735::sendIndexedImage(unsigned width, unsigned height,
     work->srcLeft *= width;
   work->x = 0;
 
-  sendColorsStep(this);
+  sendColorsStep(this, src);
 
   return DEVICE_OK;
 }
