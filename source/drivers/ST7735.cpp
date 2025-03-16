@@ -147,7 +147,7 @@ struct ST7735WorkBuffer {
   uint32_t expPalette[256];
 };
 
-void ST7735::sendBytes(const uint32_t *src, unsigned num) {
+void ST7735::sendBytes(const uint8_t *src, unsigned num) {
   assert(num > 0);
   if (num > work->srcLeft)
     num = work->srcLeft;
@@ -173,19 +173,21 @@ void ST7735::sendBytes(const uint32_t *src, unsigned num) {
   }
 }
 
-void ST7735::sendWords(const uint32_t *src, unsigned numBytes) {
+void ST7735::sendWords(uint8_t *src, unsigned numBytes) {
   if (numBytes > work->srcLeft)
     numBytes = work->srcLeft & ~3;
   assert(numBytes > 0);
   work->srcLeft -= numBytes;
   uint32_t numWords = numBytes >> 2;
-  // const uint32_t *src = (const uint32_t *)work->srcPtr;
+
+  const uint32_t *src32 = (const uint32_t *)src;
+
   uint32_t *tbl = work->expPalette;
   uint32_t *dst = (uint32_t *)work->dataBuf;
 
   if (double16)
     while (numWords--) {
-      uint32_t v = *src++;
+      uint32_t v = *src32++;
       *dst++ = tbl[0xf & (v >> 0)];
       *dst++ = tbl[0xf & (v >> 4)];
       *dst++ = tbl[0xf & (v >> 8)];
@@ -197,7 +199,7 @@ void ST7735::sendWords(const uint32_t *src, unsigned numBytes) {
     }
   else
     while (numWords--) {
-      uint32_t s = *src++;
+      uint32_t s = *src32++;
       uint32_t o = tbl[s & 0xff];
       uint32_t v = tbl[(s >> 8) & 0xff];
       *dst++ = o | (v << 24);
@@ -211,7 +213,7 @@ void ST7735::sendWords(const uint32_t *src, unsigned numBytes) {
   startTransfer((uint8_t *)dst - work->dataBuf);
 }
 
-void ST7735::sendColorsStep(ST7735 *st, uint32_t *src) {
+void ST7735::sendColorsStep(ST7735 *st, uint8_t *src) {
   ST7735WorkBuffer *work = st->work;
 
   if (work->paletteTable) {
