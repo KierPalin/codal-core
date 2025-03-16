@@ -213,7 +213,7 @@ void ST7735::sendWords(const uint8_t *src, unsigned numBytes) {
   startTransfer((uint8_t *)dst - work->dataBuf);
 }
 
-void ST7735::sendColorsStep(ST7735 *st, uint8_t *src) {
+void ST7735::sendColorsStep(ST7735 *st, const uint8_t *src) {
   ST7735WorkBuffer *work = st->work;
 
   if (work->paletteTable) {
