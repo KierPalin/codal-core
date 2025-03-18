@@ -164,4 +164,20 @@ int ILI9341::init()
     return DEVICE_OK;
 }
 
+
+void ST7735::sendConstCmdSeq(const uint8_t *buf) {
+  while (*buf) {
+    cmdBuf[0] = *buf++;
+    int v = *buf++;
+    int len = v & ~DELAY;
+    // note that we have to copy to RAM
+    memcpy(cmdBuf + 1, buf, len);
+    sendCmd(cmdBuf, len + 1);
+    buf += len;
+    if (v & DELAY) {
+      fiber_sleep(*buf++);
+    }
+  }
+}
+
 } // namespace codal

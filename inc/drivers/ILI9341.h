@@ -33,7 +33,9 @@ class ILI9341 : public ST7735 {
 public:
   const uint8_t *srcPtr;
   ILI9341(ScreenIO &io, Pin &cs, Pin &dc);
-  int init();
+
+  void sendConstCmdSeq(const uint8_t *buf);
+  int init() override;
 };
 
 } // namespace codal
