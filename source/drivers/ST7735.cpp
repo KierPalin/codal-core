@@ -398,7 +398,7 @@ int ST7735::init() {
   fiber_sleep(10); // TODO check if delay needed
 
   uint8_t startupCmds[sizeof(initCmds)];
-  memcpy(startupCmds, ::initCmds, sizeof(initCmds));
+  memcpy(startupCmds, initCmds, sizeof(initCmds));
   sendCmdSeq(startupCmds);
 
   return DEVICE_OK;
