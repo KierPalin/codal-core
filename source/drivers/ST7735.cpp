@@ -147,7 +147,7 @@ struct ST7735WorkBuffer {
   uint32_t expPalette[256];
 };
 
-void ST7735::sendBytes(const uint8_t *src, unsigned num) {
+void ST7735::sendBytes(uint8_t *src, unsigned num) {
   assert(num > 0);
   if (num > work->srcLeft)
     num = work->srcLeft;
@@ -173,14 +173,14 @@ void ST7735::sendBytes(const uint8_t *src, unsigned num) {
   }
 }
 
-void ST7735::sendWords(const uint8_t *src, unsigned numBytes) {
+void ST7735::sendWords(uint8_t *src, unsigned numBytes) {
   if (numBytes > work->srcLeft)
     numBytes = work->srcLeft & ~3;
   assert(numBytes > 0);
   work->srcLeft -= numBytes;
   uint32_t numWords = numBytes >> 2;
 
-  const uint32_t *src32 = (const uint32_t *)src;
+  uint32_t *src32 = (uint32_t *)src; // ? used to be const type & const cast
 
   uint32_t *tbl = work->expPalette;
   uint32_t *dst = (uint32_t *)work->dataBuf;
@@ -213,7 +213,7 @@ void ST7735::sendWords(const uint8_t *src, unsigned numBytes) {
   startTransfer((uint8_t *)dst - work->dataBuf);
 }
 
-void ST7735::sendColorsStep(ST7735 *st, const uint8_t *src) {
+void ST7735::sendColorsStep(ST7735 *st, uint8_t *src) {
   ST7735WorkBuffer *work = st->work;
 
   if (work->paletteTable) {
@@ -311,8 +311,8 @@ int ST7735::setSleep(bool sleepMode) {
 #define ENC16(r, g, b)                                                         \
   (((r << 3) | (g >> 3)) & 0xff) | (((b | (g << 5)) & 0xff) << 8)
 
-int ST7735::sendIndexedImage(const uint8_t *src, unsigned width, unsigned height,
-                             uint32_t *palette) {
+int ST7735::sendIndexedImage(uint8_t *src, unsigned width,
+                             unsigned height, uint32_t *palette) {
   if (!work) {
     work = new ST7735WorkBuffer;
     memset(work, 0, sizeof(*work));
@@ -365,7 +365,7 @@ void ST7735::sendCmd(uint8_t *buf, int len) {
   endCS();
 }
 
-void ST7735::sendCmdSeq(const uint8_t *buf) {
+void ST7735::sendCmdSeq(uint8_t *buf) {
   while (*buf) {
     cmdBuf[0] = *buf++;
     int v = *buf++;

@@ -64,14 +64,14 @@ protected:
     void setData() { dc->setDigitalValue(1); }
 
     void sendCmd(uint8_t *buf, int len);
-    void sendCmdSeq(const uint8_t *buf);
+    void sendCmdSeq(uint8_t *buf);
     void sendDone(Event);
-    void sendWords(const uint8_t *src, unsigned numBytes);
+    void sendWords(uint8_t *src, unsigned numBytes);
     void startTransfer(unsigned size);
-    void sendBytes(const uint8_t *src, unsigned num);
+    void sendBytes(uint8_t *src, unsigned num);
     void startRAMWR(int cmd = 0);
 
-    static void sendColorsStep(ST7735 *st, const uint8_t *src);
+    static void sendColorsStep(ST7735 *st, uint8_t *src);
 
 public:
     ST7735(ScreenIO &io, Pin &cs, Pin &dc);
@@ -93,7 +93,7 @@ public:
      * Send 4 bit indexed color image, little endian, column-major, using specified palette (use
      * NULL if unchanged).
      */
-    int sendIndexedImage(const uint8_t *src, unsigned width, unsigned height, uint32_t *palette);
+    int sendIndexedImage(uint8_t *src, unsigned width, unsigned height, uint32_t *palette);
     /**
      * Waits for the previous sendIndexedImage() operation to complete (it normally executes in
      * background).
