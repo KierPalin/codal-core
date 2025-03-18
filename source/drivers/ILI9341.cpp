@@ -159,7 +159,7 @@ int ILI9341::init()
     setData();
 
     fiber_sleep(10);
-    sendCmdSeq(initcmd);
+    sendCmdConstSeq(initcmd);
 
     return DEVICE_OK;
 }
