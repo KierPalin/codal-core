@@ -34,7 +34,6 @@ public:
   const uint8_t *srcPtr;
   ILI9341(ScreenIO &io, Pin &cs, Pin &dc);
 
-  void sendConstCmdSeq(const uint8_t *buf);
   int init() override;
 };
 

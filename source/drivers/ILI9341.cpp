@@ -1,6 +1,6 @@
 #include "ILI9341.h"
-#include "CodalFiber.h"
 #include "CodalDmesg.h"
+#include "CodalFiber.h"
 
 #define ILI9341_NOP 0x00     ///< No-op register
 #define ILI9341_SWRESET 0x01 ///< Software reset register
@@ -34,9 +34,11 @@
 #define ILI9341_VSCRSADD 0x37 ///< Vertical Scrolling Start Address
 #define ILI9341_PIXFMT 0x3A   ///< COLMOD: Pixel Format Set
 
-#define ILI9341_FRMCTR1 0xB1 ///< Frame Rate Control (In Normal Mode/Full Colors)
+#define ILI9341_FRMCTR1                                                        \
+  0xB1 ///< Frame Rate Control (In Normal Mode/Full Colors)
 #define ILI9341_FRMCTR2 0xB2 ///< Frame Rate Control (In Idle Mode/8 colors)
-#define ILI9341_FRMCTR3 0xB3 ///< Frame Rate control (In Partial Mode/Full Colors)
+#define ILI9341_FRMCTR3                                                        \
+  0xB3 ///< Frame Rate control (In Partial Mode/Full Colors)
 #define ILI9341_INVCTR 0xB4  ///< Display Inversion Control
 #define ILI9341_DFUNCTR 0xB6 ///< Display Function Control
 
@@ -55,8 +57,7 @@
 
 #define ILI9341_GMCTRP1 0xE0 ///< Positive Gamma Correction
 #define ILI9341_GMCTRN1 0xE1 ///< Negative Gamma Correction
-//#define ILI9341_PWCTR6     0xFC
-
+// #define ILI9341_PWCTR6     0xFC
 
 // clang-format off
 static const uint8_t initcmd[] = {
@@ -145,39 +146,24 @@ static const uint8_t initcmd[] = {
 };
 // clang-format on
 
-namespace codal
-{
+namespace codal {
 
-ILI9341::ILI9341(ScreenIO &io, Pin &cs, Pin &dc) : ST7735(io, cs, dc)
-{
-    double16 = true;
+ILI9341::ILI9341(ScreenIO &io, Pin &cs, Pin &dc) : ST7735(io, cs, dc) {
+  double16 = true;
 }
 
-int ILI9341::init()
-{
-    endCS();
-    setData();
+int ILI9341::init() {
+  endCS();
+  setData();
 
-    fiber_sleep(10);
-    sendCmdConstSeq(initcmd);
+  fiber_sleep(10);
 
-    return DEVICE_OK;
-}
+  uint8_t initCmds[sizeof(initCmds)];
+  memcpy(initCmds, ::initCmds, sizeof(initCmds));
 
+  sendCmdSeq(initCmds);
 
-void ST7735::sendConstCmdSeq(const uint8_t *buf) {
-  while (*buf) {
-    cmdBuf[0] = *buf++;
-    int v = *buf++;
-    int len = v & ~DELAY;
-    // note that we have to copy to RAM
-    memcpy(cmdBuf + 1, buf, len);
-    sendCmd(cmdBuf, len + 1);
-    buf += len;
-    if (v & DELAY) {
-      fiber_sleep(*buf++);
-    }
-  }
+  return DEVICE_OK;
 }
 
 } // namespace codal

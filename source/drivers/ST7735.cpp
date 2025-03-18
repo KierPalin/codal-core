@@ -311,8 +311,8 @@ int ST7735::setSleep(bool sleepMode) {
 #define ENC16(r, g, b)                                                         \
   (((r << 3) | (g >> 3)) & 0xff) | (((b | (g << 5)) & 0xff) << 8)
 
-int ST7735::sendIndexedImage(uint8_t *src, unsigned width,
-                             unsigned height, uint32_t *palette) {
+int ST7735::sendIndexedImage(uint8_t *src, unsigned width, unsigned height,
+                             uint32_t *palette) {
   if (!work) {
     work = new ST7735WorkBuffer;
     memset(work, 0, sizeof(*work));
@@ -396,6 +396,11 @@ int ST7735::init() {
   setData();
 
   fiber_sleep(10); // TODO check if delay needed
+
+  // Copy initCmds into a uint8_t array
+  uint8_t initCmds[sizeof(initCmds)];
+  memcpy(initCmds, ::initCmds, sizeof(initCmds));
+
   sendCmdSeq(initCmds);
 
   return DEVICE_OK;
