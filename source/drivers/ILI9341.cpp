@@ -158,10 +158,9 @@ int ILI9341::init() {
 
   fiber_sleep(10);
 
-  uint8_t initCmds[sizeof(initCmds)];
-  memcpy(initCmds, ::initCmds, sizeof(initCmds));
-
-  sendCmdSeq(initCmds);
+  uint8_t startupCmds[sizeof(initcmd)];
+  memcpy(startupCmds, ::initcmd, sizeof(initcmd));
+  sendCmdSeq(startupCmds);
 
   return DEVICE_OK;
 }
