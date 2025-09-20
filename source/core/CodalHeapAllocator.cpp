@@ -287,6 +287,7 @@ void *device_malloc_in(size_t size, HeapDefinition &heap)
 REAL_TIME_FUNC
 void* device_malloc (size_t size)
 {
+    device_heap_print();
     static uint8_t initialised = 0;
     void *p;
 
