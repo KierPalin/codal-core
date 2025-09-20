@@ -463,6 +463,7 @@ void LevelDetectorSPL::listenerAdded()
 
 void LevelDetectorSPL::listenerRemoved()
 {
+  if (this->listenerCount > 0)
     this->listenerCount--;
 }
 
