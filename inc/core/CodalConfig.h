@@ -164,7 +164,7 @@ DEALINGS IN THE SOFTWARE.
 #endif
 
 #ifndef DMESG_ENABLE
-#define DMESG_ENABLE                          0
+#define DMESG_ENABLE                          1
 #endif
 
 // When non-zero internal debug messages (DMESG() macro) go to a in-memory buffer of this size (in bytes).
