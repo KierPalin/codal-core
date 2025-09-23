@@ -29,6 +29,7 @@ DEALINGS IN THE SOFTWARE.
   */
 #include "CodalConfig.h"
 #include "CodalListener.h"
+#include "CodalDmesg.h"
 
 using namespace codal;
 
