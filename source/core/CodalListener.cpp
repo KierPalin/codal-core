@@ -117,7 +117,9 @@ void Listener::queue(Event e)
             queueDepth++;
         }
 
-        if (queueDepth < MESSAGE_BUS_LISTENER_MAX_QUEUE_DEPTH)
+        if (queueDepth < MESSAGE_BUS_LISTENER_MAX_QUEUE_DEPTH) {
+            DMESG("MAX QUEUE DEPTH REACHED");
             p->next = new EventQueueItem(e);
+        }
     }
 }
