@@ -317,6 +317,7 @@ void* device_malloc (size_t size)
 
     if (p != NULL)
     {
+        device_heap_print();
 #if (CODAL_DEBUG >= CODAL_DEBUG_HEAP)
             DMESG("device_malloc: ALLOCATED: %d [%p]", size, p);
 #endif
