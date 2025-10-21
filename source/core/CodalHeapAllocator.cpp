@@ -274,6 +274,9 @@ void *device_malloc_in(size_t size, HeapDefinition &heap)
     return block+1;
 }
 
+
+
+
 /**
   * Attempt to allocate a given amount of memory from any of our configured heap areas.
   *
@@ -285,10 +288,16 @@ REAL_TIME_FUNC
 void* device_malloc (size_t size)
 {
     static uint8_t initialised = 0;
+    static CODAL_TIMESTAMP LAST_TIME = system_timer_current_time();
     void *p;
 
     if (size <= 0)
         return NULL;
+
+    if ((system_timer_current_time() - LAST_TIME) > 500) {
+        DMESG("TIMEOUT: %d", size);
+        LAST_TIME = system_timer_current_time();
+    }
 
     if (!initialised)
     {
