@@ -317,11 +317,13 @@ void* device_malloc (size_t size)
 
     if (p != NULL)
     {
-        device_heap_print();
-#if (CODAL_DEBUG >= CODAL_DEBUG_HEAP)
-            DMESG("device_malloc: ALLOCATED: %d [%p]", size, p);
-#endif
-            return p;
+        if (size >= 200) {
+            device_heap_print();
+            #if (CODAL_DEBUG >= CODAL_DEBUG_HEAP)
+                        DMESG("device_malloc: ALLOCATED: %d [%p]", size, p);
+            #endif
+        }
+        return p;
     }
 
     // We're totally out of options (and memory!).
@@ -350,8 +352,11 @@ void device_free (void *mem)
     int i=0;
 
 #if (CODAL_DEBUG >= CODAL_DEBUG_HEAP)
-    if (heap_count > 0)
-        DMESG("device_free:   %p", mem);
+    if (heap_count > 0) {
+        // if (size >= 200) {
+        // DMESG("device_free:   %p", mem);
+        // }
+    }
 #endif
     // Sanity check.
     if (memory == NULL)
