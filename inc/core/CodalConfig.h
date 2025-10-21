@@ -172,7 +172,7 @@ DEALINGS IN THE SOFTWARE.
 // Typical size range between 512 and 4096. Set to 0 to disable.
 #ifndef DEVICE_DMESG_BUFFER_SIZE
   #if DMESG_ENABLE > 0
-    #define DEVICE_DMESG_BUFFER_SIZE          1024
+    #define DEVICE_DMESG_BUFFER_SIZE          4096 // Changed from 1024
   #else
     #define DEVICE_DMESG_BUFFER_SIZE          0
   #endif
