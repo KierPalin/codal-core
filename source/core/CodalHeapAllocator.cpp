@@ -54,6 +54,7 @@ DEALINGS IN THE SOFTWARE.
 #include "CodalCompat.h"
 #include "CodalDmesg.h"
 #include "ErrorNo.h"
+#include "Timer.h"
 
 using namespace codal;
 
