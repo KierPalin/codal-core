@@ -400,6 +400,12 @@ namespace codal
     };
 }
 
+/*
+* Create a table of diagnostic information on the currently running fibers.
+* Outut the result of the query to the DMESG output.
+*/
+void debug_print_fibers();
+
 
 /**
   * Assembler Context switch routing.

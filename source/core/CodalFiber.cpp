@@ -905,3 +905,56 @@ int FiberLock::getWaitCount()
         return 0;
     return 0 - locked;
 }
+
+void
+debug_print_fiber_list(Fiber *list)
+{
+    Fiber *f = list;
+    const char *queue;
+
+    if (list == runQueue)
+        queue = "RUN     ";
+    if (list == sleepQueue)
+        queue = "SLEEP   ";
+    if (list == waitQueue)
+        queue = "WAIT    ";
+    if (list == fiberPool)
+        queue = "POOL    ";
+
+    if (f)
+    {
+        DMESG("    Queue:      Fiber:      StackBottom:  Size:         Flags:");
+
+        while(f)
+        {
+            DMESG("    %s    %p  %p    %p    %s%s%s%s", f==currentFiber ? "Current " : f==idleFiber ? "Idle    " : queue, f, f->stack_bottom, f->stack_top-f->stack_bottom, f->flags & DEVICE_FIBER_FLAG_FOB ? "Fork On Block" : "-", f->flags & DEVICE_FIBER_FLAG_PARENT ? "Parent " : "-", f->flags & DEVICE_FIBER_FLAG_CHILD ? "Child " : "-", f->flags & DEVICE_FIBER_FLAG_DO_NOT_PAGE ? "Do not page " : "-");
+            f = f->qnext;
+        }
+    }
+
+    if (list == runQueue){
+        f = idleFiber;
+        DMESG("    %s    %p  %p    %p    %s%s%s%s", f==currentFiber ? "Current " : f==idleFiber ? "Idle    " : queue, f, f->stack_bottom, f->stack_top-f->stack_bottom, f->flags & DEVICE_FIBER_FLAG_FOB ? "Fork On Block" : "-", f->flags & DEVICE_FIBER_FLAG_PARENT ? "Parent " : "-", f->flags & DEVICE_FIBER_FLAG_CHILD ? "Child " : "-", f->flags & DEVICE_FIBER_FLAG_DO_NOT_PAGE ? "Do not page " : "-");
+    }
+}
+
+/*
+* Create a table of diagnostic information on the currently running fibers.
+* Outut the result of the query to the DMESG output.
+*/
+void
+debug_print_fibers()
+{
+    Fiber *f;
+    int fiberCount;
+
+    fiberCount = 0;
+    for (f=fiberList; f != NULL; f=f->next)
+        fiberCount++;
+
+    DMESG("\n*** Fiber List *** [Total fibers: %d]\n", fiberCount);
+    debug_print_fiber_list(runQueue);
+    debug_print_fiber_list(sleepQueue);
+    debug_print_fiber_list(waitQueue);
+    debug_print_fiber_list(fiberPool);
+}
