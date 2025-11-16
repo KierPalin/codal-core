@@ -57,7 +57,7 @@ DEALINGS IN THE SOFTWARE.
 
 using namespace codal;
 
-#if CONFIG_ENABLED(DEVICE_HEAP_ALLOCATOR)
+// #if CONFIG_ENABLED(DEVICE_HEAP_ALLOCATOR)
 
 // A list of all active heap regions, and their dimensions in memory.
 HeapDefinition heap[DEVICE_MAXIMUM_HEAPS] = { };
@@ -119,7 +119,7 @@ void device_heap_print()
         device_heap_print(heap[i]);
     }
 }
-#endif
+// #endif
 
 /**
   * Create and initialise a given memory region as for heap storage.
