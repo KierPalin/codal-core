@@ -57,7 +57,7 @@ DEALINGS IN THE SOFTWARE.
 
 using namespace codal;
 
-#if CONFIG_ENABLED(DEVICE_HEAP_ALLOCATOR)
+// #if CONFIG_ENABLED(DEVICE_HEAP_ALLOCATOR)
 
 // A list of all active heap regions, and their dimensions in memory.
 HeapDefinition heap[DEVICE_MAXIMUM_HEAPS] = { };
@@ -426,4 +426,4 @@ void _free_r(struct _reent *, void *addr)
     free(addr);
 }
 
-#endif
+// #endif

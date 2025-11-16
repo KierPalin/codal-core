@@ -91,6 +91,9 @@ int device_create_heap(PROCESSOR_WORD_TYPE start, PROCESSOR_WORD_TYPE end);
 uint32_t device_heap_size(uint8_t heap_index);
 
 
+void device_heap_print();
+
+
 /**
   * Attempt to allocate a given amount of memory from any of our configured heap areas.
   *
